@@ -1,0 +1,14 @@
+﻿@model SimpleVOD.Controllers.VideoNode
+
+@{
+    var nodes = Model?.GetBreadCrumb() ?? new List<SimpleVOD.Controllers.VideoNode>();
+}
+<div>
+    <h3>
+        <a asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="">Home</a>
+        @foreach (var node in nodes)
+        {
+            <span>></span> <a asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="@node.Id">@node.Title</a>
+        }
+    </h3>
+</div>

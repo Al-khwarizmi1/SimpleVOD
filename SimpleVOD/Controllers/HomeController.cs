@@ -1,38 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SimpleVOD.Models;
 
 namespace SimpleVOD.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly VideoIndex videoIndex;
+
+        private VideoConfiguration options;
+
+        public HomeController(VideoIndex videoIndex, IOptions<VideoConfiguration> options)
         {
-            return View();
+            this.videoIndex = videoIndex;
+            this.options = options.Value;
         }
 
-        public IActionResult About()
+        public IActionResult Index(string id = null)
         {
-            ViewData["Message"] = "Your application description page.";
+            var nodes = new List<VideoNode>();
+            VideoNode parent = null;
 
-            return View();
+            if (id != null)
+            {
+                parent = videoIndex.FindNode(id);
+            }
+
+            if (parent == null)
+            {
+                nodes = videoIndex.RootNodes;
+            }
+            else
+            {
+                if (parent.Children.Any())
+                {
+                    nodes = parent.Children;
+                }
+                else
+                {
+                    var path = Path.Combine(options.RootDirectory, videoIndex.FindNode(id).GetFullPath());
+                    if (System.IO.File.Exists(path))
+                    {
+                        return View("Play", parent);
+                    }
+                }
+            }
+
+            return View(nodes);
         }
 
-        public IActionResult Contact()
+        public IActionResult Play(string id)
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return View(videoIndex.FindNode(id));
         }
 
-        public IActionResult Privacy()
+        public async Task<FileStreamResult> GetVideo(string id)
         {
-            return View();
+            var path = Path.Combine(options.RootDirectory, videoIndex.FindNode(id).GetFullPath());
+            if (path != null)
+            {
+                return File(System.IO.File.OpenRead(path), "video/mp4");
+            }
+            else
+            {
+                return null;
+            }
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

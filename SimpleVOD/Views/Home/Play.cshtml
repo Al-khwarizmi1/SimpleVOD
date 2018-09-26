@@ -1,0 +1,14 @@
+﻿@model SimpleVOD.Controllers.VideoNode
+
+<partial name="_BreadCrumb" model="Model?.Parent" />
+
+<video width="480"
+       height="320"
+       controls="controls"
+       autoplay="autoplay">
+    <source src="/home/getvideo/@Model.Id"
+            type="video/mp4">
+    </source>
+</video>
+
+<a asp-area="" asp-controller="Home" asp-action="GetVideo" asp-route-id="@Model.Id">Download</a>

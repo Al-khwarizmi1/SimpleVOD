@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
+using SimpleVOD.Controllers;
 
 namespace SimpleVOD
 {
@@ -30,6 +32,9 @@ namespace SimpleVOD
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<VideoConfiguration>(Configuration.GetSection("VideoConfig"));
+
+            services.AddSingleton<VideoIndex>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -55,6 +60,17 @@ namespace SimpleVOD
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+    }
+
+    public class VideoConfiguration
+    {
+        public string RootDirectory { get; set; }
+        public string[] SupportedFormats { get; set; }
+
+        public VideoConfiguration()
+        {
+            SupportedFormats = new string[]{ };
         }
     }
 }
