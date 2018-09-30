@@ -8,7 +8,7 @@ namespace SimpleVOD.Controllers
 {
     public class VideoIndex
     {
-        private VideoConfiguration options { get; }
+        private VideoConfiguration options;
 
         public List<VideoNode> RootNodes { get; set; }
 

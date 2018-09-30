@@ -6,9 +6,11 @@
        height="320"
        controls="controls"
        autoplay="autoplay">
-    <source src="/home/getvideo/@Model.Id"
-            type="video/mp4">
-    </source>
+    <source src="/home/GetVideoMp4/@Model.Id" type="video/mp4" />
+    @*<source src="/home/GetVideoOgg/@Model.Id" type="video/ogg" />*@
+    @*<source src="/home/GetVideoWebM/@Model.Id" type="video/webm" />*@
 </video>
 
-<a asp-area="" asp-controller="Home" asp-action="GetVideo" asp-route-id="@Model.Id">Download</a>
+<div>
+    <a asp-area="" asp-controller="Home" asp-action="GetVideoMp4" asp-route-id="@Model.Id" >Download MP4</a>
+</div>
